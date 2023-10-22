@@ -55,3 +55,4 @@ if __name__ == "__main__":
     window = Main_Window()
     window.show()
     sys.exit(app.exec_())
+    print("amir reza khar ast")
