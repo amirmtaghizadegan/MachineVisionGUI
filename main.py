@@ -13,7 +13,6 @@ class Main_Window(QtWidgets.QWidget):
         self.UI()
         self.show()
 
-
     def mainDesign(self):
         # buttons
         self.openFile_button = QtWidgets.QPushButton("open file")
@@ -22,12 +21,10 @@ class Main_Window(QtWidgets.QWidget):
         self.apply_button = QtWidgets.QPushButton("apply")
 
         # Set icons for the buttons
-        self.openFile_button.setIcon(QtGui.QIcon("button1_icon.png"))
-        self.saveFile_button.setIcon(QtGui.QIcon("button2_icon.png"))
-        self.saveAsFile_button.setIcon(QtGui.QIcon("button3_icon.png"))
-        self.apply_button.setIcon(QtGui.QIcon("button4_icon.png"))
-
-        # 
+        self.openFile_button.setIcon(QtGui.QIcon("open_file.png"))
+        self.saveFile_button.setIcon(QtGui.QIcon("save.png"))
+        self.saveAsFile_button.setIcon(QtGui.QIcon("saveas.png"))
+        self.apply_button.setIcon(QtGui.QIcon("submit.png"))
 
     def layouts(self):
         # toolbox layout
