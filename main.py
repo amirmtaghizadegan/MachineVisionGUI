@@ -1,7 +1,6 @@
 import typing
 from PyQt6 import QtWidgets, QtCore, QtGui
 import sys
-
 from PyQt6.QtWidgets import QLayout
 
 class Main_Window(QtWidgets.QWidget):
