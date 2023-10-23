@@ -73,24 +73,33 @@ class Main_Window(QtWidgets.QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
+        self.savePath = ""
 
     def openFile_func(self):
         self.figure1.clear()
         self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")[0]
-        self.img = imread(self.path)
-        ax = self.figure1.add_subplot()
-        if self.img.shape[2] > 1:
-            ax.imshow(self.img)
-        else:
-            ax.imshow(self.img, "gray")
-        ax.axis(False)
-        self.canvas1.draw()
+        if self.path:
+            self.img = imread(self.path)
+            ax = self.figure1.add_subplot()
+            if self.img.shape[2] > 1:
+                ax.imshow(self.img)
+            else:
+                ax.imshow(self.img, "gray")
+            ax.axis(False)
+            self.canvas1.draw()
 
     def saveFile_func(self):
-        pass
+        if self.savePath:
+            self.figure2.savefig(self.savePath)
+        else:
+            self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
+            if self.savePath:
+                self.figure2.savefig(self.savePath)
 
     def saveAsFile_func(self):
-        pass
+        self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
+        if self.savePath:
+            self.figure2.savefig(self.savePath)
 
     def submit_func(self):
         pass
