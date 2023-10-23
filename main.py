@@ -1,8 +1,7 @@
-import typing
 from PyQt6 import QtWidgets, QtCore, QtGui
 import sys
-
-from PyQt6.QtWidgets import QLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (600, 350)):
@@ -33,7 +32,13 @@ class Main_Window(QtWidgets.QWidget):
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
 
-        # 
+        ## figures
+        self.figure1 = Figure()
+        self.canvas1 = FigureCanvas(self.figure1)
+        self.figure2 = Figure()
+        self.canvas2 = FigureCanvas(self.figure2)
+
+         
 
     def layouts(self):
         # toolbox layout
@@ -47,10 +52,16 @@ class Main_Window(QtWidgets.QWidget):
 
         # hyper parameters layout
 
+        # plot layout
+        self.plot_layout = QtWidgets.QHBoxLayout()
+        self.plot_layout.addWidget(self.canvas1)
+        self.plot_layout.addWidget(self.canvas2)
+        
         # central layout
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addLayout(self.toolbox)
         self.main_layout.addStretch()
+        self.main_layout.addLayout(self.plot_layout)
         self.setLayout(self.main_layout)
 
     def UI(self):
