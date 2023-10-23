@@ -48,9 +48,13 @@ class Main_Window(QtWidgets.QWidget):
 
         # toolbox icons
         self.openFile_button.setIcon(QtGui.QIcon("images/plus_round.png"))
+        self.openFile_button.setToolTip("Open image")
         self.saveFile_button.setIcon(QtGui.QIcon("images/save.png"))
+        self.saveFile_button.setToolTip("Save image")
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
+        self.saveAsFile_button.setToolTip("Save image as")
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
+        self.apply_button.setToolTip("Submit")
 
          # connect
         self.openFile_button.clicked.connect(self.openFile_func)
