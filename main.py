@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 import sys
-
-from PyQt6.QtWidgets import QLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (600, 350)):
@@ -12,6 +12,7 @@ class Main_Window(QtWidgets.QWidget):
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
         self.UI()
         self.show()
+
 
     def mainDesign(self):
         ## toolbox
@@ -37,13 +38,7 @@ class Main_Window(QtWidgets.QWidget):
         self.figure2 = Figure()
         self.canvas2 = FigureCanvas(self.figure2)
 
-        # Set icons for the buttons
-        self.openFile_button.setIcon(QtGui.QIcon("button1_icon.png"))
-        self.saveFile_button.setIcon(QtGui.QIcon("button2_icon.png"))
-        self.saveAsFile_button.setIcon(QtGui.QIcon("button3_icon.png"))
-        self.apply_button.setIcon(QtGui.QIcon("button4_icon.png"))
-
-        # 
+         
 
     def layouts(self):
         # toolbox layout
@@ -78,4 +73,4 @@ if __name__ == "__main__":
     app.setWindowIcon(QtGui.QIcon("./images/logo.jpeg"))
     window = Main_Window()
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
