@@ -23,7 +23,7 @@ class Main_Window(QtWidgets.QWidget):
         filemenu = self.menubar.addMenu("&File")
         filemenu.addAction(QtGui.QIcon("images/open_file.png"), "Open File", self.openFile_func)
         filemenu.addAction(QtGui.QIcon("images/save.png"), "Save", self.saveFile_func)
-        filemenu.addAction(QtGui.QIcon("images/saveas.png"), "Save as", self.saveAsFile_func)
+        filemenu.addAction(QtGui.QIcon("images/save as.png"), "Save as", self.saveAsFile_func)
         filemenu.addAction(QtGui.QIcon("images/exit.png"), "Exit",self.exitApp_func)
 
         # Edit menu
