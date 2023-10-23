@@ -15,8 +15,23 @@ class Main_Window(QtWidgets.QWidget):
 
 
     def mainDesign(self):
-        # menu bar
+        ## menu bar
         self.menubar = QtWidgets.QMenuBar(self)
+        # File menu
+        filemenu = self.menubar.addMenu("&File")
+        # filemenu.addAction(self.openFile_func) ADD self.openfile_func
+        # filemenu.addAction(self.saveAction) ADD self.saveFile_func
+        # filemenu.addAction(self.saveeasAction) ADD self.saveAsFile_func
+        # filemenu.addAction(self.exitAction) ADD self.exitAction_func
+
+        # Edit menu
+        editMenu = self.menubar.addMenu("&Edit")
+        # Add edit actions later ...
+
+        # Help menu
+        helpMenu = self.menubar.addMenu("&Help")
+        # Add help menu later ...
+
 
         ## toolbox
         # buttons
@@ -43,13 +58,10 @@ class Main_Window(QtWidgets.QWidget):
 
         # status bar
         self.statusBar = QtWidgets.QStatusBar(self)
-        self.statusBar.showMessage('Ready', 5000)
+        self.statusBar.showMessage('Ready')
 
 
     def layouts(self):
-        # menu bar
-
-
         # toolbox layout
         self.toolbox = QtWidgets.QHBoxLayout()
         self.toolbox.addWidget(self.openFile_button)
