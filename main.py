@@ -19,10 +19,10 @@ class Main_Window(QtWidgets.QWidget):
         self.menubar = QtWidgets.QMenuBar(self)
         # File menu
         filemenu = self.menubar.addMenu("&File")
-        # filemenu.addAction(self.openFile_func) ADD self.openfile_func
-        # filemenu.addAction(self.saveAction) ADD self.saveFile_func
-        # filemenu.addAction(self.saveeasAction) ADD self.saveAsFile_func
-        # filemenu.addAction(self.exitAction) ADD self.exitAction_func
+        filemenu.addAction(self.openFile_func)
+        filemenu.addAction(self.saveAction)
+        filemenu.addAction(self.saveeasAction)
+        filemenu.addAction(self.exitAction)
 
         # Edit menu
         editMenu = self.menubar.addMenu("&Edit")
