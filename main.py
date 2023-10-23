@@ -21,10 +21,10 @@ class Main_Window(QtWidgets.QWidget):
         self.menubar = QtWidgets.QMenuBar(self)
         # File menu
         filemenu = self.menubar.addMenu("&File")
-        filemenu.addAction(self.openFile_func)
-        filemenu.addAction(self.saveAction)
-        filemenu.addAction(self.saveeasAction)
-        filemenu.addAction(self.exitAction)
+        filemenu.addAction(QtGui.QIcon("images/open_file.png"), "Open File", self.openFile_func)
+        filemenu.addAction(QtGui.QIcon("images/save.png"), "Save", self.saveFile_func)
+        filemenu.addAction(QtGui.QIcon("images/saveas.png"), "Save as", self.saveAsFile_func)
+        filemenu.addAction("Exit",self.exitApp_func)
 
         # Edit menu
         editMenu = self.menubar.addMenu("&Edit")
@@ -51,6 +51,12 @@ class Main_Window(QtWidgets.QWidget):
         self.saveFile_button.setIcon(QtGui.QIcon("images/save.png"))
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
+
+         # connect
+        self.openFile_button.clicked.connect(self.openFile_func)
+        self.saveFile_button.clicked.connect(self.saveFile_func)
+        self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
+        self.apply_button.clicked.connect(self.submit_func)
 
         # figures
         self.figure1 = Figure()
@@ -114,6 +120,9 @@ class Main_Window(QtWidgets.QWidget):
 
     def submit_func(self):
         pass
+
+    def exitApp_func(self):
+        exit()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
