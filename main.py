@@ -2,6 +2,8 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import sys
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import os
+from imageio import imread, imsave, imopen
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (600, 350)):
@@ -91,6 +93,27 @@ class Main_Window(QtWidgets.QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
+
+    def openFile_func(self):
+        self.figure1.clear()
+        self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")[0]
+        self.img = imread(self.path)
+        ax = self.figure1.add_subplot()
+        if self.img.shape[2] > 1:
+            ax.imshow(self.img)
+        else:
+            ax.imshow(self.img, "gray")
+        ax.axis(False)
+        self.canvas1.draw()
+
+    def saveFile_func(self):
+        pass
+
+    def saveAsFile_func(self):
+        pass
+
+    def submit_func(self):
+        pass
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
