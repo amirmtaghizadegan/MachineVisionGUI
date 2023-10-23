@@ -17,13 +17,31 @@ class Main_Window(QtWidgets.QWidget):
 
 
     def mainDesign(self):
+        ## menu bar
+        self.menubar = QtWidgets.QMenuBar(self)
+        # File menu
+        filemenu = self.menubar.addMenu("&File")
+        filemenu.addAction(QtGui.QIcon("images/open_file.png"), "Open File", self.openFile_func)
+        filemenu.addAction(QtGui.QIcon("images/save.png"), "Save", self.saveFile_func)
+        filemenu.addAction(QtGui.QIcon("images/saveas.png"), "Save as", self.saveAsFile_func)
+        filemenu.addAction("Exit",self.exitApp_func)
+
+        # Edit menu
+        editMenu = self.menubar.addMenu("&Edit")
+        # Add edit actions later ...
+
+        # Help menu
+        helpMenu = self.menubar.addMenu("&Help")
+        # Add help menu later ...
+
+
         ## toolbox
         # buttons
         self.openFile_button = QtWidgets.QPushButton()
         self.saveFile_button = QtWidgets.QPushButton()
         self.saveAsFile_button = QtWidgets.QPushButton()
         self.apply_button = QtWidgets.QPushButton()
-        
+
         # drop down
         self.filter_list = QtWidgets.QComboBox() 
         self.filter_list.addItem("hello")
@@ -34,18 +52,23 @@ class Main_Window(QtWidgets.QWidget):
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
 
-        # connect
+         # connect
         self.openFile_button.clicked.connect(self.openFile_func)
         self.saveFile_button.clicked.connect(self.saveFile_func)
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
         self.apply_button.clicked.connect(self.submit_func)
 
-        ## figures
+        # figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
         self.figure2 = Figure()
         self.canvas2 = FigureCanvas(self.figure2)
-         
+
+        # status bar
+        self.statusBar = QtWidgets.QStatusBar(self)
+        self.statusBar.showMessage('Ready')
+
+
     def layouts(self):
         # toolbox layout
         self.toolbox = QtWidgets.QHBoxLayout()
@@ -58,6 +81,7 @@ class Main_Window(QtWidgets.QWidget):
 
         # hyper parameters layout
 
+
         # plot layout
         self.plot_layout = QtWidgets.QHBoxLayout()
         self.plot_layout.addWidget(self.canvas1)
@@ -65,11 +89,13 @@ class Main_Window(QtWidgets.QWidget):
         
         # central layout
         self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addWidget(self.menubar)
         self.main_layout.addLayout(self.toolbox)
         self.main_layout.addStretch()
         self.main_layout.addLayout(self.plot_layout)
+        self.main_layout.addWidget(self.statusBar)
         self.setLayout(self.main_layout)
-
+        
     def UI(self):
         self.mainDesign()
         self.layouts()
@@ -103,6 +129,9 @@ class Main_Window(QtWidgets.QWidget):
 
     def submit_func(self):
         pass
+
+    def exitApp_func(self):
+        exit()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
