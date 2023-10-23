@@ -24,15 +24,15 @@ class Main_Window(QtWidgets.QWidget):
         filemenu.addAction(QtGui.QIcon("images/open_file.png"), "Open File", self.openFile_func)
         filemenu.addAction(QtGui.QIcon("images/save.png"), "Save", self.saveFile_func)
         filemenu.addAction(QtGui.QIcon("images/saveas.png"), "Save as", self.saveAsFile_func)
-        filemenu.addAction("Exit",self.exitApp_func)
+        filemenu.addAction(QtGui.QIcon("images/exit.png"), "Exit",self.exitApp_func)
 
         # Edit menu
-        editMenu = self.menubar.addMenu("&Edit")
+        editmenu = self.menubar.addMenu("&Edit")
         # Add edit actions later ...
 
         # Help menu
-        helpMenu = self.menubar.addMenu("&Help")
-        # Add help menu later ...
+        helpmenu = self.menubar.addMenu("&Help")
+        helpmenu.addAction(QtGui.QIcon("images/info_round.png"), "About")
 
 
         ## toolbox
@@ -47,7 +47,7 @@ class Main_Window(QtWidgets.QWidget):
         self.filter_list.addItem("hello")
 
         # toolbox icons
-        self.openFile_button.setIcon(QtGui.QIcon("images/open_file.png"))
+        self.openFile_button.setIcon(QtGui.QIcon("images/plus_round.png"))
         self.saveFile_button.setIcon(QtGui.QIcon("images/save.png"))
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
