@@ -6,13 +6,16 @@ import os
 from imageio import imread, imsave, imopen
 
 class Main_Window(QtWidgets.QWidget):
-    def __init__(self, pos = QtCore.QPoint(350, 150), size = (600, 350)):
+    def __init__(self, pos = QtCore.QPoint(350, 150), size = (800, 600)):
         super().__init__()
-        self.setGeometry(350, 150, 550, 350)
+        # self.setGeometry(350, 150, 550, 350)
         self.setGeometry(pos.x(), pos.y(), size[0], size[1])
         self.setWindowTitle("Machine Vision")
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
         self.UI()
+
+        self.savePath = ""
+        
         self.show()
 
 
@@ -23,7 +26,7 @@ class Main_Window(QtWidgets.QWidget):
         filemenu = self.menubar.addMenu("&File")
         filemenu.addAction(QtGui.QIcon("images/open_file.png"), "Open File", self.openFile_func)
         filemenu.addAction(QtGui.QIcon("images/save.png"), "Save", self.saveFile_func)
-        filemenu.addAction(QtGui.QIcon("images/saveas.png"), "Save as", self.saveAsFile_func)
+        filemenu.addAction(QtGui.QIcon("images/save as.png"), "Save as", self.saveAsFile_func)
         filemenu.addAction("Exit",self.exitApp_func)
 
         # Edit menu
@@ -99,7 +102,6 @@ class Main_Window(QtWidgets.QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
-        self.savePath = ""
 
     def openFile_func(self):
         self.figure1.clear()
@@ -113,19 +115,23 @@ class Main_Window(QtWidgets.QWidget):
                 ax.imshow(self.img, "gray")
             ax.axis(False)
             self.canvas1.draw()
+            self.statusBar.showMessage(f"File: {self.path}", 10000)
 
     def saveFile_func(self):
         if self.savePath:
             self.figure2.savefig(self.savePath)
+            self.statusBar.showMessage(f"File saved", 10000)
         else:
             self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
             if self.savePath:
                 self.figure2.savefig(self.savePath)
+                self.statusBar.showMessage(f"File saved", 10000)
 
     def saveAsFile_func(self):
         self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
         if self.savePath:
             self.figure2.savefig(self.savePath)
+            self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
         pass
