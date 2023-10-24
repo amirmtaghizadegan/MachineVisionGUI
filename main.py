@@ -38,7 +38,7 @@ class Main_Window(QtWidgets.QWidget):
         helpmenu.addAction(QtGui.QIcon("images/info_round.png"), "About")
 
 
-        ## toolbox
+        ## toolbar
         # buttons
         self.openFile_button = QtWidgets.QPushButton()
         self.saveFile_button = QtWidgets.QPushButton()
@@ -59,7 +59,7 @@ class Main_Window(QtWidgets.QWidget):
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
         self.apply_button.setToolTip("Submit")
 
-         # connect
+        # connect
         self.openFile_button.clicked.connect(self.openFile_func)
         self.saveFile_button.clicked.connect(self.saveFile_func)
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
