@@ -48,8 +48,9 @@ class Main_Window(QtWidgets.QWidget):
         # drop down
         self.filter_dropdown = QtWidgets.QComboBox() 
         self.filter_dropdown.addItems(self.filterList)
+        # self.filter_dropdown.changeEvent()
 
-        # toolbox icons
+        # toolbar icons
         self.openFile_button.setIcon(QtGui.QIcon("images/plus_round.png"))
         self.openFile_button.setToolTip("Open image")
         self.saveFile_button.setIcon(QtGui.QIcon("images/save.png"))
@@ -77,14 +78,14 @@ class Main_Window(QtWidgets.QWidget):
 
 
     def layouts(self):
-        # toolbox layout
-        self.toolbox = QtWidgets.QHBoxLayout()
-        self.toolbox.addWidget(self.openFile_button)
-        self.toolbox.addWidget(self.saveFile_button)
-        self.toolbox.addWidget(self.saveAsFile_button)
-        self.toolbox.addWidget(self.filter_dropdown)
-        self.toolbox.addWidget(self.apply_button)
-        self.toolbox.addStretch()
+        # toolbar layout
+        self.toolbar = QtWidgets.QHBoxLayout()
+        self.toolbar.addWidget(self.openFile_button)
+        self.toolbar.addWidget(self.saveFile_button)
+        self.toolbar.addWidget(self.saveAsFile_button)
+        self.toolbar.addWidget(self.filter_dropdown)
+        self.toolbar.addWidget(self.apply_button)
+        self.toolbar.addStretch()
 
         # hyper parameters layout
 
@@ -97,7 +98,7 @@ class Main_Window(QtWidgets.QWidget):
         # central layout
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addWidget(self.menubar)
-        self.main_layout.addLayout(self.toolbox)
+        self.main_layout.addLayout(self.toolbar)
         self.main_layout.addStretch()
         self.main_layout.addLayout(self.plot_layout)
         self.main_layout.addWidget(self.statusBar)
