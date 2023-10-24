@@ -2,6 +2,8 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from imageio import imread, imsave, imopen
 from matplotlib.figure import Figure
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 import sys
 import os
 import cv2
@@ -74,6 +76,12 @@ class Main_Window(QtWidgets.QWidget):
         self.canvas2 = FigureCanvas(self.figure2)
 
         ## toolbox
+        # titles
+        self.toolbox_label = QtWidgets.QLabel("Filter Setting")
+        self.toolbox_label.setStyleSheet("QLabel{font-size: 10pt; font-weight: bold;}")
+        self.textbox_label = QtWidgets.QLabel("Hyper Parameters:")
+
+        # hyper parameters
         self.textBox = QtWidgets.QPlainTextEdit()
         self.textBox.setFixedSize(int(1/4*self.window_size[0]), int(1/4*self.window_size[1]))
 
@@ -94,6 +102,8 @@ class Main_Window(QtWidgets.QWidget):
 
         # toolbox layout
         self.toolbox = QtWidgets.QVBoxLayout()
+        self.toolbox.addWidget(self.toolbox_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.toolbox.addWidget(self.textbox_label)
         self.toolbox.addWidget(self.textBox)
         self.toolbox.addStretch()
 
