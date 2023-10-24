@@ -7,9 +7,10 @@ import os
 import cv2
 
 class Main_Window(QtWidgets.QWidget):
-    def __init__(self, pos = QtCore.QPoint(350, 150), size = (800, 600)):
+    def __init__(self, pos = QtCore.QPoint(350, 150), size = (1200, 600)):
         super().__init__()
         # self.setGeometry(350, 150, 550, 350)
+        self.window_size = size
         self.setGeometry(pos.x(), pos.y(), size[0], size[1])
         self.setWindowTitle("Machine Vision")
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
@@ -66,13 +67,17 @@ class Main_Window(QtWidgets.QWidget):
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
         self.apply_button.clicked.connect(self.submit_func)
 
-        # figures
+        ## figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
         self.figure2 = Figure()
         self.canvas2 = FigureCanvas(self.figure2)
 
-        # status bar
+        ## toolbox
+        self.textBox = QtWidgets.QPlainTextEdit()
+        self.textBox.setFixedSize(int(1/4*self.window_size[0]), int(1/4*self.window_size[1]))
+
+        ## status bar
         self.statusBar = QtWidgets.QStatusBar(self)
         self.statusBar.showMessage('Ready')
 
@@ -87,13 +92,16 @@ class Main_Window(QtWidgets.QWidget):
         self.toolbar.addWidget(self.apply_button)
         self.toolbar.addStretch()
 
-        # hyper parameters layout
-
+        # toolbox layout
+        self.toolbox = QtWidgets.QVBoxLayout()
+        self.toolbox.addWidget(self.textBox)
+        self.toolbox.addStretch()
 
         # plot layout
         self.plot_layout = QtWidgets.QHBoxLayout()
         self.plot_layout.addWidget(self.canvas1)
         self.plot_layout.addWidget(self.canvas2)
+        self.plot_layout.addLayout(self.toolbox)
         
         # central layout
         self.main_layout = QtWidgets.QVBoxLayout()
