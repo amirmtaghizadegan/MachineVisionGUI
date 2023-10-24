@@ -1,9 +1,10 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-import sys
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import os
 from imageio import imread, imsave, imopen
+from matplotlib.figure import Figure
+import sys
+import os
+import cv2
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (800, 600)):
@@ -12,10 +13,9 @@ class Main_Window(QtWidgets.QWidget):
         self.setGeometry(pos.x(), pos.y(), size[0], size[1])
         self.setWindowTitle("Machine Vision")
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
+        self.filterList = ["Canny"]
         self.UI()
-
         self.savePath = ""
-        
         self.show()
 
 
@@ -46,8 +46,8 @@ class Main_Window(QtWidgets.QWidget):
         self.apply_button = QtWidgets.QPushButton()
 
         # drop down
-        self.filter_list = QtWidgets.QComboBox() 
-        self.filter_list.addItem("hello")
+        self.filter_dropdown = QtWidgets.QComboBox() 
+        self.filter_dropdown.addItems(self.filterList)
 
         # toolbox icons
         self.openFile_button.setIcon(QtGui.QIcon("images/plus_round.png"))
@@ -82,7 +82,7 @@ class Main_Window(QtWidgets.QWidget):
         self.toolbox.addWidget(self.openFile_button)
         self.toolbox.addWidget(self.saveFile_button)
         self.toolbox.addWidget(self.saveAsFile_button)
-        self.toolbox.addWidget(self.filter_list)
+        self.toolbox.addWidget(self.filter_dropdown)
         self.toolbox.addWidget(self.apply_button)
         self.toolbox.addStretch()
 
@@ -138,13 +138,27 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
-        pass
+        id = self.filter_dropdown.setCurrentIndex()
+        choice = self.filter_list[id]
+        if (choice=="Canny"):
+            self.filteredImage = cv2.Canny(self.img)
+        self.figure2.clear()
+        ax = self.figure2.add_subplot()
+        if self.filteredImage.shape[2] > 1:
+            ax.imshow(self.filteredImage)
+        else:
+            ax.imshow(self.filteredImage, "gray")
+        ax.axis(False)
+        self.canvas2.draw()
+        self.statusBar.showMessage(f"{choice} Filter applied", 10000)
 
     def appSetting_func(self):
         pass
 
     def exitApp_func(self):
         exit()
+
+    
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
