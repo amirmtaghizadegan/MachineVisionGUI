@@ -31,7 +31,7 @@ class Main_Window(QtWidgets.QWidget):
 
         # Edit menu
         editmenu = self.menubar.addMenu("&Edit")
-        # Add edit actions later ...
+        editmenu.addAction("Setting", self.appSetting_func)
 
         # Help menu
         helpmenu = self.menubar.addMenu("&Help")
@@ -138,6 +138,9 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
+        pass
+
+    def appSetting_func(self):
         pass
 
     def exitApp_func(self):
