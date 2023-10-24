@@ -2,8 +2,6 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from imageio import imread, imsave, imopen
 from matplotlib.figure import Figure
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
 import sys
 import os
 import cv2
@@ -102,7 +100,7 @@ class Main_Window(QtWidgets.QWidget):
 
         # toolbox layout
         self.toolbox = QtWidgets.QVBoxLayout()
-        self.toolbox.addWidget(self.toolbox_label, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.toolbox.addWidget(self.toolbox_label, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
         self.toolbox.addWidget(self.textbox_label)
         self.toolbox.addWidget(self.textBox)
         self.toolbox.addStretch()
