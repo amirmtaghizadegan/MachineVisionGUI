@@ -108,9 +108,9 @@ class Main_Window(QtWidgets.QWidget):
         self.layouts()
 
     def openFile_func(self):
-        self.figure1.clear()
         self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")[0]
         if self.path:
+            self.figure1.clear()
             self.img = imread(self.path)
             ax = self.figure1.add_subplot()
             if self.img.shape[2] > 1:
@@ -138,13 +138,13 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
-        id = self.filter_dropdown.setCurrentIndex()
-        choice = self.filter_list[id]
+        id = self.filter_dropdown.currentIndex()
+        choice = self.filterList[id]
         if (choice=="Canny"):
-            self.filteredImage = cv2.Canny(self.img)
+            self.filteredImage = cv2.Canny(self.img,100,200)
         self.figure2.clear()
         ax = self.figure2.add_subplot()
-        if self.filteredImage.shape[2] > 1:
+        if len(self.filteredImage.shape) > 2:
             ax.imshow(self.filteredImage)
         else:
             ax.imshow(self.filteredImage, "gray")
