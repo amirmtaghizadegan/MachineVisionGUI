@@ -2,9 +2,13 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from imageio import imread, imsave, imopen
 from matplotlib.figure import Figure
+import inspect
 import sys
 import os
 import cv2
+
+def Canny(image, threshold1=100, threshold2=200):
+        return cv2.Canny(image, threshold1, threshold2)
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (1200, 600)):
@@ -15,7 +19,10 @@ class Main_Window(QtWidgets.QWidget):
         self.setWindowTitle("Machine Vision")
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
         self.filterList = ["Canny"]
+        self.filter = Canny
         self.UI()
+        self.filter_change()
+
         self.savePath = ""
         self.show()
 
@@ -67,6 +74,7 @@ class Main_Window(QtWidgets.QWidget):
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
         self.apply_button.clicked.connect(self.submit_func)
 
+        self.filter_dropdown.currentIndexChanged.connect(self.filter_change)
         ## figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
@@ -82,6 +90,7 @@ class Main_Window(QtWidgets.QWidget):
         # hyper parameters
         self.textBox = QtWidgets.QPlainTextEdit()
         self.textBox.setFixedSize(int(1/4*self.window_size[0]), int(1/4*self.window_size[1]))
+        self.textBox.setPlainText(inspect.signature(self.filter).__str__()[1:-1].replace(",", "\n"))
 
         ## status bar
         self.statusBar = QtWidgets.QStatusBar(self)
@@ -119,7 +128,9 @@ class Main_Window(QtWidgets.QWidget):
         self.main_layout.addLayout(self.plot_layout)
         self.main_layout.addWidget(self.statusBar)
         self.setLayout(self.main_layout)
-        
+    
+    
+    
     def UI(self):
         self.mainDesign()
         self.layouts()
@@ -155,10 +166,19 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
-        id = self.filter_dropdown.currentIndex()
-        choice = self.filterList[id]
-        if (choice=="Canny"):
-            self.filteredImage = cv2.Canny(self.img,100,200)
+        inputs = self.textBox.toPlainText()
+        inputs = inputs.split("\n")
+        inputs = dict([x.strip().split("=") for x in inputs])
+        for key in inputs.keys():
+            try:
+                inputs[key] = eval(inputs[key])
+            except:
+                pass
+        print(inputs)
+        print("----------------------")
+        print("\n")
+        self.filteredImage = self.filter(*inputs.values())
+        # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
         self.figure2.clear()
         ax = self.figure2.add_subplot()
         if len(self.filteredImage.shape) > 2:
@@ -167,13 +187,22 @@ class Main_Window(QtWidgets.QWidget):
             ax.imshow(self.filteredImage, "gray")
         ax.axis(False)
         self.canvas2.draw()
-        self.statusBar.showMessage(f"{choice} Filter applied", 10000)
+        self.statusBar.showMessage(f"{self.currentFilterName} Filter applied", 10000)
+
+    def filter_change(self):
+        id = self.filter_dropdown.currentIndex()
+        choice = self.filterList[id]
+        self.currentFilterName = choice
+        if (choice=="Canny"):
+            self.filter = cv2.Canny
 
     def appSetting_func(self):
         pass
 
     def exitApp_func(self):
         exit()
+
+    
 
     
 
