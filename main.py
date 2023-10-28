@@ -39,16 +39,23 @@ class Main_Window(QtWidgets.QWidget):
 
         # Edit menu
         editmenu = self.menubar.addMenu("&Edit")
-        editmenu.addAction("Setting", self.appSetting_func)
+        editmenu.addAction(QtGui.QIcon("images/Setting.png"), "Setting", self.appSetting_func)
+
+        # Window menu
+        windowmenu = self.menubar.addMenu("&Window")
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Minimize")
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Maximize")
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Fullscreen")
 
         # Help menu
         helpmenu = self.menubar.addMenu("&Help")
-        helpmenu.addAction(QtGui.QIcon("images/info_round.png"), "About")
+        helpmenu.addAction(QtGui.QIcon("images/info_round.png"), "About", self.show_About_App)
 
 
         ## toolbar
         # buttons
         self.openFile_button = QtWidgets.QPushButton()
+        self.grayimage_checkbox = QtWidgets.QCheckBox("Grayscale image")
         self.saveFile_button = QtWidgets.QPushButton()
         self.saveAsFile_button = QtWidgets.QPushButton()
         self.apply_button = QtWidgets.QPushButton()
@@ -73,8 +80,8 @@ class Main_Window(QtWidgets.QWidget):
         self.saveFile_button.clicked.connect(self.saveFile_func)
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
         self.apply_button.clicked.connect(self.submit_func)
-
         self.filter_dropdown.currentIndexChanged.connect(self.filter_change)
+
         ## figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
@@ -83,7 +90,7 @@ class Main_Window(QtWidgets.QWidget):
 
         ## toolbox
         # titles
-        self.toolbox_label = QtWidgets.QLabel("Filter Setting")
+        self.toolbox_label = QtWidgets.QLabel("Filter Settings")
         self.toolbox_label.setStyleSheet("QLabel{font-size: 10pt; font-weight: bold;}")
         self.textbox_label = QtWidgets.QLabel("Hyper Parameters:")
 
@@ -101,6 +108,7 @@ class Main_Window(QtWidgets.QWidget):
         # toolbar layout
         self.toolbar = QtWidgets.QHBoxLayout()
         self.toolbar.addWidget(self.openFile_button)
+        self.toolbar.addWidget(self.grayimage_checkbox)
         self.toolbar.addWidget(self.saveFile_button)
         self.toolbar.addWidget(self.saveAsFile_button)
         self.toolbar.addWidget(self.filter_dropdown)
@@ -124,13 +132,12 @@ class Main_Window(QtWidgets.QWidget):
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addWidget(self.menubar)
         self.main_layout.addLayout(self.toolbar)
-        self.main_layout.addStretch()
         self.main_layout.addLayout(self.plot_layout)
         self.main_layout.addWidget(self.statusBar)
         self.setLayout(self.main_layout)
     
     
-    
+
     def UI(self):
         self.mainDesign()
         self.layouts()
@@ -140,11 +147,12 @@ class Main_Window(QtWidgets.QWidget):
         if self.path:
             self.figure1.clear()
             self.img = imread(self.path)
+
             ax = self.figure1.add_subplot()
-            if self.img.shape[2] > 1:
-                ax.imshow(self.img)
+            if self.grayimage_checkbox.isChecked():
+                ax.imshow(self.img, cmap="gray")
             else:
-                ax.imshow(self.img, "gray")
+                ax.imshow(self.img)
             ax.axis(False)
             self.canvas1.draw()
             self.statusBar.showMessage(f"File: {self.path}", 10000)
@@ -181,10 +189,10 @@ class Main_Window(QtWidgets.QWidget):
         # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
         self.figure2.clear()
         ax = self.figure2.add_subplot()
-        if len(self.filteredImage.shape) > 2:
-            ax.imshow(self.filteredImage)
-        else:
+        if self.grayimage_checkbox.isChecked():
             ax.imshow(self.filteredImage, "gray")
+        else:
+            ax.imshow(self.filteredImage)
         ax.axis(False)
         self.canvas2.draw()
         self.statusBar.showMessage(f"{self.currentFilterName} Filter applied", 10000)
@@ -199,12 +207,31 @@ class Main_Window(QtWidgets.QWidget):
     def appSetting_func(self):
         pass
 
+    def show_About_App(self):
+        dlg = QtWidgets.QDialog(self)
+        dlg.setFixedSize(220,280)
+        dlg.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
+        dlg.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+        message = QtWidgets.QLabel(":) This application developed by a great Team that prisoned in iran so if you see this message\n\nPLEASE HELP US :_(", dlg)
+        message.setWordWrap(True)
+        message.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        ok_button = QtWidgets.QPushButton("COOL!",dlg)
+        about_layout = QtWidgets.QVBoxLayout()
+        about_layout.addWidget(message)
+        about_layout.addWidget(ok_button)
+        dlg.setLayout(about_layout)
+        ok_button.clicked.connect(dlg.close)
+        dlg.setWindowTitle("Hallo!")
+        dlg.exec()
+
+    
+
     def exitApp_func(self):
         exit()
 
-    
 
-    
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
