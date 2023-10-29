@@ -97,7 +97,8 @@ class Main_Window(QtWidgets.QWidget):
         # hyper parameters
         self.textBox = QtWidgets.QPlainTextEdit()
         self.textBox.setFixedSize(int(1/4*self.window_size[0]), int(1/4*self.window_size[1]))
-        self.textBox.setPlainText(inspect.signature(self.filter).__str__()[1:-1].replace(",", "\n"))
+        text = [x+"\n" for x in inspect.signature(self.filter).__str__()[1:-1].split(", ")]
+        self.textBox.setPlainText(''.join(text[1:]))
 
         ## status bar
         self.statusBar = QtWidgets.QStatusBar(self)
@@ -175,34 +176,46 @@ class Main_Window(QtWidgets.QWidget):
 
     def submit_func(self):
         inputs = self.textBox.toPlainText()
-        inputs = inputs.split("\n")
-        inputs = dict([x.strip().split("=") for x in inputs])
-        for key in inputs.keys():
+        try:
+            input = {list(inspect.signature(self.filter).parameters.items())[0][0]: self.img}
             try:
-                inputs[key] = eval(inputs[key])
+                inputs = inputs.split("\n")
+                inputs = dict([x.strip().split("=") for x in inputs[:-1]])
+                for key in inputs.keys():
+                    try:
+                        inputs[key] = eval(inputs[key])
+                    except:
+                        self.statusBar.showMessage("bad input. please make sure you are using valid libraries.")
+                input.update(inputs)
+                self.filteredImage = self.filter(**input)
+                # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
+                self.figure2.clear()
+                ax = self.figure2.add_subplot()
+                if self.grayimage_checkbox.isChecked():
+                    ax.imshow(self.filteredImage, "gray")
+                else:
+                    ax.imshow(self.filteredImage)
+                ax.axis(False)
+                self.canvas2.draw()
+                self.statusBar.showMessage(f"{self.currentFilterName} Filter applied", 10000)
+            except ValueError:
+                print(input)
+                print("--------------------")
+                print(inputs)
+                self.statusBar.showMessage("please check your inputs")
             except:
-                pass
-        print(inputs)
-        print("----------------------")
-        print("\n")
-        self.filteredImage = self.filter(*inputs.values())
-        # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
-        self.figure2.clear()
-        ax = self.figure2.add_subplot()
-        if self.grayimage_checkbox.isChecked():
-            ax.imshow(self.filteredImage, "gray")
-        else:
-            ax.imshow(self.filteredImage)
-        ax.axis(False)
-        self.canvas2.draw()
-        self.statusBar.showMessage(f"{self.currentFilterName} Filter applied", 10000)
+                self.statusBar.showMessage("Something went wrong. Please check your input values")
+        except AttributeError:
+            self.statusBar.showMessage("please add an image first")
+        
+        
 
     def filter_change(self):
         id = self.filter_dropdown.currentIndex()
         choice = self.filterList[id]
         self.currentFilterName = choice
         if (choice=="Canny"):
-            self.filter = cv2.Canny
+            self.filter = Canny
 
     def appSetting_func(self):
         pass
