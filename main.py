@@ -147,12 +147,13 @@ class Main_Window(QtWidgets.QWidget):
         self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")[0]
         if self.path:
             self.figure1.clear()
-            self.img = imread(self.path)
-
             ax = self.figure1.add_subplot()
             if self.grayimage_checkbox.isChecked():
+                self.img = cv2.imread(self.path, 0)
                 ax.imshow(self.img, cmap="gray")
             else:
+                self.img = cv2.imread(self.path)
+                self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
                 ax.imshow(self.img)
             ax.axis(False)
             self.canvas1.draw()
