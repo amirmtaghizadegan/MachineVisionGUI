@@ -85,6 +85,8 @@ class Main_Window(QtWidgets.QWidget):
         ## figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
+        # self.canvas1.setSizePolicy(QtGui.QSizePolicy.Expanding,
+        #                           QtGui.QSizePolicy.Expanding)
         self.figure2 = Figure()
         self.canvas2 = FigureCanvas(self.figure2)
 
