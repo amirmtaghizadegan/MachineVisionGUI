@@ -1,6 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from imageio import imread, imsave, imopen
 from matplotlib.figure import Figure
 import inspect
 import sys
@@ -85,10 +84,15 @@ class Main_Window(QtWidgets.QWidget):
         ## figures
         self.figure1 = Figure()
         self.canvas1 = FigureCanvas(self.figure1)
-        # self.canvas1.setSizePolicy(QtGui.QSizePolicy.Expanding,
-        #                           QtGui.QSizePolicy.Expanding)
         self.figure2 = Figure()
         self.canvas2 = FigureCanvas(self.figure2)
+        self.figure1.subplots_adjust(0, 0, 1, 1)
+        self.figure2.subplots_adjust(0, 0, 1, 1)
+        self.figure1.set_facecolor("none")
+        self.figure2.set_facecolor("none")
+        self.canvas1.setStyleSheet("background-color:transparent;")
+        self.canvas2.setStyleSheet("background-color:transparent;")
+
 
         ## toolbox
         # titles
@@ -139,37 +143,38 @@ class Main_Window(QtWidgets.QWidget):
         self.main_layout.addWidget(self.statusBar)
         self.setLayout(self.main_layout)
     
-    
-
     def UI(self):
         self.mainDesign()
         self.layouts()
 
     def openFile_func(self):
-        self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")[0]
-        if self.path:
-            self.figure1.clear()
-            ax = self.figure1.add_subplot()
-            if self.grayimage_checkbox.isChecked():
-                self.img = cv2.imread(self.path, 0)
-                ax.imshow(self.img, cmap="gray")
-            else:
-                self.img = cv2.imread(self.path)
-                self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
-                ax.imshow(self.img)
-            ax.axis(False)
-            self.canvas1.draw()
-            self.statusBar.showMessage(f"File: {self.path}", 10000)
+        self.path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', os.path.curdir, "Image Files (*.png *.jpg *.jpeg *.bmp)")[0]
+        try:
+            if self.path:
+                self.figure1.clear()
+                ax = self.figure1.add_subplot()
+                if self.grayimage_checkbox.isChecked():
+                    self.img = cv2.imread(self.path, 0)
+                    ax.imshow(self.img, cmap="gray")
+                else:
+                    self.img = cv2.imread(self.path)
+                    self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
+                    ax.imshow(self.img)
+                ax.axis(False)
+                self.canvas1.draw()
+                self.statusBar.showMessage(f"File: {self.path}", 10000)
+        except:
+            self.statusBar.showMessage("please check your image and try again.", 10000)
 
     def saveFile_func(self):
-        if self.savePath:
-            self.figure2.savefig(self.savePath)
-            self.statusBar.showMessage(f"File saved", 10000)
-        else:
+        if not self.savePath:
             self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
             if self.savePath:
-                self.figure2.savefig(self.savePath)
-                self.statusBar.showMessage(f"File saved", 10000)
+                try:
+                    cv2.imwrite(self.savePath, self.filteredImage)
+                    self.statusBar.showMessage(f"File saved", 10000)
+                except:
+                    self.statusBar.update("Please submit a filter first", 10000)
 
     def saveAsFile_func(self):
         self.savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', os.path.curdir, "Image Files (*.png *.jpg *.bmp)")
@@ -194,7 +199,7 @@ class Main_Window(QtWidgets.QWidget):
                 # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
                 self.figure2.clear()
                 ax = self.figure2.add_subplot()
-                if self.grayimage_checkbox.isChecked():
+                if self.filteredImage.ndim == 2:
                     ax.imshow(self.filteredImage, "gray")
                 else:
                     ax.imshow(self.filteredImage)
@@ -202,9 +207,6 @@ class Main_Window(QtWidgets.QWidget):
                 self.canvas2.draw()
                 self.statusBar.showMessage(f"{self.currentFilterName} Filter applied", 10000)
             except ValueError:
-                print(input)
-                print("--------------------")
-                print(inputs)
                 self.statusBar.showMessage("please check your inputs")
             except:
                 self.statusBar.showMessage("Something went wrong. Please check your input values")
