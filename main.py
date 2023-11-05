@@ -42,9 +42,9 @@ class Main_Window(QtWidgets.QWidget):
 
         # Window menu
         windowmenu = self.menubar.addMenu("&Window")
-        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Minimize")
-        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Maximize")
-        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Fullscreen")
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Minimize", self.showMinimized)
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Maximize", self.showMaximized)
+        windowmenu.addAction(QtGui.QIcon("images/Setting.png"), "Fullscreen", self.showFullScreen)
 
         # Help menu
         helpmenu = self.menubar.addMenu("&Help")
@@ -241,8 +241,6 @@ class Main_Window(QtWidgets.QWidget):
         ok_button.clicked.connect(dlg.close)
         dlg.setWindowTitle("Hallo!")
         dlg.exec()
-
-    
 
     def exitApp_func(self):
         exit()
