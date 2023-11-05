@@ -57,10 +57,13 @@ class Main_Window(QtWidgets.QWidget):
         self.grayimage_checkbox = QtWidgets.QCheckBox("Grayscale image")
         self.saveFile_button = QtWidgets.QPushButton()
         self.saveAsFile_button = QtWidgets.QPushButton()
-        self.apply_button = QtWidgets.QPushButton()
+        self.apply_button = QtWidgets.QPushButton() 
+        self.apply_button.setFixedWidth(60)
+
 
         # drop down
         self.filter_dropdown = QtWidgets.QComboBox() 
+        self.filter_dropdown.setFixedWidth(110)
         self.filter_dropdown.addItems(self.filterList)
         # self.filter_dropdown.changeEvent()
 
@@ -71,6 +74,7 @@ class Main_Window(QtWidgets.QWidget):
         self.saveFile_button.setToolTip("Save image")
         self.saveAsFile_button.setIcon(QtGui.QIcon("images/save as.png"))
         self.saveAsFile_button.setToolTip("Save image as")
+        self.apply_button.setText("Apply")
         self.apply_button.setIcon(QtGui.QIcon("images/submit.png"))
         self.apply_button.setToolTip("Submit")
 
@@ -230,7 +234,7 @@ class Main_Window(QtWidgets.QWidget):
         dlg.setFixedSize(220,280)
         dlg.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
         dlg.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
-        message = QtWidgets.QLabel(":) This application developed by a great Team that prisoned in iran so if you see this message\n\nPLEASE HELP US :_(", dlg)
+        message = QtWidgets.QLabel(":) This application developed by a great Team that are prisoned in iran so if you see this message\n\nPLEASE HELP US :_(", dlg)
         message.setWordWrap(True)
         message.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         ok_button = QtWidgets.QPushButton("COOL!",dlg)
@@ -244,9 +248,6 @@ class Main_Window(QtWidgets.QWidget):
 
     def exitApp_func(self):
         exit()
-
-
-
 
 
 if __name__ == "__main__":
