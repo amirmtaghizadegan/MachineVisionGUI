@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import numpy as np
 import inspect
 import sys
 import os
@@ -114,6 +115,23 @@ class Main_Window(QtWidgets.QWidget):
         self.statusBar = QtWidgets.QStatusBar(self)
         self.statusBar.showMessage('Ready')
 
+        ## kernel
+        self.kernel_checkbox = QtWidgets.QCheckBox("kernel")
+        self.kernel_size0 = QtWidgets.QTextEdit("3")
+        self.kernel_label0 = QtWidgets.QLabel("x")
+        self.kernel_size1 = QtWidgets.QTextEdit("3")
+        self.kernel = QtWidgets.QTableWidget(int(self.kernel_size0.toPlainText()), int(self.kernel_size1.toPlainText()))
+        self.create_kernel()
+
+        self.kernel_button = QtWidgets.QPushButton("create")
+
+        self.kernel_checkbox.setMaximumSize(70, 28)
+        self.kernel_size0.setFixedSize(QtCore.QSize(28, 28))
+        self.kernel_size1.setFixedSize(QtCore.QSize(28, 28))
+        self.kernel_label0.setFixedSize(QtCore.QSize(10, 28))
+
+        self.kernel_button.clicked.connect(self.create_kernel)
+
 
     def layouts(self):
         # toolbar layout
@@ -126,18 +144,33 @@ class Main_Window(QtWidgets.QWidget):
         self.toolbar.addWidget(self.apply_button)
         self.toolbar.addStretch()
 
+        # kernel layout
+        self.kernel_layout = QtWidgets.QVBoxLayout()
+        self.kernel_barLayout = QtWidgets.QHBoxLayout()
+
+        self.kernel_barLayout.addWidget(self.kernel_checkbox)
+        self.kernel_barLayout.addWidget(self.kernel_size0)
+        self.kernel_barLayout.addWidget(self.kernel_label0)
+        self.kernel_barLayout.addWidget(self.kernel_size1)
+        self.kernel_barLayout.addWidget(self.kernel_button)
+        self.kernel_barLayout.setSpacing(4)
+
+        self.kernel_layout.addLayout(self.kernel_barLayout)
+        self.kernel_layout.addWidget(self.kernel)
+
         # toolbox layout
         self.toolbox = QtWidgets.QVBoxLayout()
         self.toolbox.addWidget(self.toolbox_label, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
         self.toolbox.addWidget(self.textbox_label)
         self.toolbox.addWidget(self.textBox)
-        self.toolbox.addStretch()
+        self.toolbox.addLayout(self.kernel_layout)
 
         # plot layout
         self.plot_layout = QtWidgets.QHBoxLayout()
         self.plot_layout.addWidget(self.canvas1)
         self.plot_layout.addWidget(self.canvas2)
         self.plot_layout.addLayout(self.toolbox)
+
         
         # central layout
         self.main_layout = QtWidgets.QVBoxLayout()
@@ -218,6 +251,22 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage("please add an image first")
         
         
+    def create_kernel(self):
+        try:
+            x = eval(self.kernel_size0.toPlainText())
+            y = eval(self.kernel_size1.toPlainText())
+            self.kernel.setRowCount(x)
+            self.kernel.setColumnCount(y)
+            for i in range(x):
+                self.kernel.horizontalHeader().resizeSection(i, 10)
+                for j in range(y):
+                    self.kernel.verticalHeader().resizeSection(j, 10)
+                    item = QtWidgets.QTableWidgetItem("0")
+                    item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                    self.kernel.setItem(i, j, item)
+        except:
+            self.statusBar.showMessage("please check kernel size")
+
 
     def filter_change(self):
         id = self.filter_dropdown.currentIndex()
