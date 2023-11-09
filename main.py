@@ -326,7 +326,7 @@ class Main_Window(QtWidgets.QWidget):
         pass
 
     def image_toggle(self):
-        # if self.figure1.get_axes():
+        if self.figure1.get_axes():
             self.figure1.clear()
             ax = self.figure1.add_subplot()
             if self.grayimage_checkbox.isChecked():
@@ -339,8 +339,8 @@ class Main_Window(QtWidgets.QWidget):
             ax.axis(False)
             self.canvas1.draw()
             self.statusBar.showMessage(f"Input image channels changed!", 8000)
-        # else:
-        #     self.statusBar.showMessage(f"Please open you image first.", 8000)
+        else:
+            self.statusBar.showMessage(f"Please open you image first.", 8000)
         
 
     def show_About_App(self):
