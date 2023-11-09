@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from scipy.signal import convolve2d
 import numpy as np
 import inspect
 import sys
@@ -8,7 +9,13 @@ import os
 import cv2
 
 def Canny(image, threshold1=100, threshold2=200):
-        return cv2.Canny(image, threshold1, threshold2)
+    return cv2.Canny(image, threshold1, threshold2)
+
+def conv2d(img, kernel, mode = "same", boundry = "fill", fillValue = 0):
+    return convolve2d(img, kernel, mode = mode, boundary=boundry, fillvalue=fillValue)
+
+def filter2d(img, kernel, ddepth=-1):
+    return cv2.filter2D(img, kernel=kernel, ddepth=ddepth)
 
 class Main_Window(QtWidgets.QWidget):
     def __init__(self, pos = QtCore.QPoint(350, 150), size = (1200, 600)):
@@ -18,7 +25,7 @@ class Main_Window(QtWidgets.QWidget):
         self.setGeometry(pos.x(), pos.y(), size[0], size[1])
         self.setWindowTitle("Machine Vision")
         self.setWindowIcon(QtGui.QIcon("images/logo.jpeg"))
-        self.filterList = ["Canny"]
+        self.filterList = ["Canny", "conv2d", "filter2d"]
         self.filter = Canny
         self.UI()
         self.filter_change()
@@ -66,7 +73,7 @@ class Main_Window(QtWidgets.QWidget):
         self.filter_dropdown = QtWidgets.QComboBox() 
         self.filter_dropdown.setFixedWidth(110)
         self.filter_dropdown.addItems(self.filterList)
-        # self.filter_dropdown.changeEvent()
+        self.filter_dropdown.currentIndexChanged.connect(self.filter_change)
 
         # toolbar icons
         self.openFile_button.setIcon(QtGui.QIcon("images/plus_round.png"))
@@ -126,12 +133,14 @@ class Main_Window(QtWidgets.QWidget):
         self.kernel_button = QtWidgets.QPushButton("create")
 
         self.kernel_checkbox.setMaximumSize(70, 28)
+        self.kernel_flag = False
         self.kernel_size0.setFixedSize(QtCore.QSize(28, 28))
         self.kernel_size1.setFixedSize(QtCore.QSize(28, 28))
         self.kernel_label0.setFixedSize(QtCore.QSize(10, 28))
 
+        # connect
         self.kernel_button.clicked.connect(self.create_kernel)
-
+        self.kernel_checkbox.toggled.connect(self.change_kernelText)
 
     def layouts(self):
         # toolbar layout
@@ -220,12 +229,13 @@ class Main_Window(QtWidgets.QWidget):
             self.statusBar.showMessage(f"File saved as:\n{self.savePath}", 10000)
 
     def submit_func(self):
-        inputs = self.textBox.toPlainText()
+        inputs = self.textBox.toPlainText().strip().split("\n")
+        if self.kernel_checkbox.isChecked():
+            kernel = self.read_kernel()
         try:
             input = {list(inspect.signature(self.filter).parameters.items())[0][0]: self.img}
             try:
-                inputs = inputs.split("\n")
-                inputs = dict([x.strip().split("=") for x in inputs[:-1]])
+                inputs = dict([x.strip().split("=") for x in inputs])
                 for key in inputs.keys():
                     try:
                         inputs[key] = eval(inputs[key])
@@ -233,10 +243,10 @@ class Main_Window(QtWidgets.QWidget):
                         self.statusBar.showMessage("bad input. please make sure you are using valid libraries.")
                 input.update(inputs)
                 self.filteredImage = self.filter(**input)
-                # self.filteredImage = self.filter(self.img[:, :, 1], 100, 200)
                 self.figure2.clear()
                 ax = self.figure2.add_subplot()
-                if self.filteredImage.ndim == 2:
+                ndim = self.filteredImage.ndim
+                if ndim  == 2:
                     ax.imshow(self.filteredImage, "gray")
                 else:
                     ax.imshow(self.filteredImage)
@@ -246,15 +256,26 @@ class Main_Window(QtWidgets.QWidget):
             except ValueError:
                 self.statusBar.showMessage("please check your inputs")
             except:
-                self.statusBar.showMessage("Something went wrong. Please check your input values")
+                self.statusBar.showMessage("something went wrong.")
         except AttributeError:
             self.statusBar.showMessage("please add an image first")
-        
-        
+    
+    def change_kernelText(self):
+        text = self.textBox.toPlainText().strip()
+        if self.kernel_checkbox.isChecked():
+            if not self.kernel_flag:
+                text = text + "\nkernel"
+                self.textBox.setPlainText(text)
+        else:
+            if text.split("\n")[-1] == "kernel":
+                text = text[:text.rfind('\n')]
+                self.textBox.setPlainText(text)
+
     def create_kernel(self):
         try:
             x = eval(self.kernel_size0.toPlainText())
             y = eval(self.kernel_size1.toPlainText())
+            self.kernelSize = (x, y)
             self.kernel.setRowCount(x)
             self.kernel.setColumnCount(y)
             for i in range(x):
@@ -266,14 +287,37 @@ class Main_Window(QtWidgets.QWidget):
                     self.kernel.setItem(i, j, item)
         except:
             self.statusBar.showMessage("please check kernel size")
-
+    
+    def read_kernel(self):
+        try:
+            x, y = self.kernelSize
+            kernel = np.empty(self.kernelSize)
+            for i in range(x):
+                for j in range(y):
+                    kernel[i, j] = eval(self.kernel.item(i, j).text())
+            return kernel
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            return 0
 
     def filter_change(self):
         id = self.filter_dropdown.currentIndex()
-        choice = self.filterList[id]
-        self.currentFilterName = choice
-        if (choice=="Canny"):
-            self.filter = Canny
+        self.filter = eval(self.filterList[id])
+        self.currentFilterName = self.filterList[id]
+        text = [x+"\n" for x in inspect.signature(self.filter).__str__()[1:-1].split(", ")]
+        self.kernel_checkbox.setChecked(False)
+        if "kernel" in text:
+            self.kernel_flag = True
+            self.kernel_checkbox.setChecked(True)
+            text[text.index("kernel")] += "=kernel"
+        elif "kernel\n" in text:
+            self.kernel_flag = True
+            self.kernel_checkbox.setChecked(True)
+            text[text.index("kernel\n")] = "kernel=kernel\n"
+        else:
+            self.kernel_flag = False
+        self.textBox.setPlainText(''.join(text[1:]))
 
     def appSetting_func(self):
         pass
