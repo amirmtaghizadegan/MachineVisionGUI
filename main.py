@@ -92,6 +92,8 @@ class Main_Window(QtWidgets.QWidget):
         self.saveAsFile_button.clicked.connect(self.saveAsFile_func)
         self.apply_button.clicked.connect(self.submit_func)
         self.filter_dropdown.currentIndexChanged.connect(self.filter_change)
+        self.grayimage_checkbox.toggled.connect(self.image_toggle)
+
 
         ## figures
         self.figure1 = Figure()
@@ -123,14 +125,15 @@ class Main_Window(QtWidgets.QWidget):
         self.statusBar.showMessage('Ready')
 
         ## kernel
-        self.kernel_checkbox = QtWidgets.QCheckBox("kernel")
+        self.kernel_checkbox = QtWidgets.QCheckBox("Kernel")
         self.kernel_size0 = QtWidgets.QTextEdit("3")
         self.kernel_label0 = QtWidgets.QLabel("x")
         self.kernel_size1 = QtWidgets.QTextEdit("3")
         self.kernel = QtWidgets.QTableWidget(int(self.kernel_size0.toPlainText()), int(self.kernel_size1.toPlainText()))
         self.create_kernel()
 
-        self.kernel_button = QtWidgets.QPushButton("create")
+        self.kernel_button = QtWidgets.QPushButton("Create")
+        self.kernel_button.setFixedWidth(125)
 
         self.kernel_checkbox.setMaximumSize(70, 28)
         self.kernel_flag = False
@@ -318,9 +321,27 @@ class Main_Window(QtWidgets.QWidget):
         else:
             self.kernel_flag = False
         self.textBox.setPlainText(''.join(text[1:]))
-
+    
     def appSetting_func(self):
         pass
+
+    def image_toggle(self):
+        # if self.figure1.get_axes():
+            self.figure1.clear()
+            ax = self.figure1.add_subplot()
+            if self.grayimage_checkbox.isChecked():
+                self.img = cv2.imread(self.path, 0)
+                ax.imshow(self.img, cmap="gray")
+            else:
+                self.img = cv2.imread(self.path)
+                self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
+                ax.imshow(self.img)
+            ax.axis(False)
+            self.canvas1.draw()
+            self.statusBar.showMessage(f"Input image channels changed!", 8000)
+        # else:
+        #     self.statusBar.showMessage(f"Please open you image first.", 8000)
+        
 
     def show_About_App(self):
         dlg = QtWidgets.QDialog(self)
