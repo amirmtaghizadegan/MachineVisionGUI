@@ -1,3 +1,27 @@
+'''
+This Software has been written for Machine Vision course and has no commercial use. Feel free to use and share.
+Authors:
+Amir M. Taghizadegan
+Amir R. Radmanesh
+
+*** Disclaimer of Warranty:
+    This software is provided "as is" without any warranty, express or implied,
+    including but not limited to the implied warranties of merchantability and
+    fitness for a particular purpose. The authors make no representations or warranties
+    regarding the use or performance of this software.
+
+*** Limitation of Liability:
+    In no event shall the authors be liable for any special, indirect, or consequential
+    damages or any damages whatsoever resulting from loss of use, data, or profits, whether
+    in an action of contract, negligence, or other tortious action, arising out of or in
+    connection with the use or performance of this software.
+
+*** Use at Your Own Risk:
+    The use of this software is at your own risk. It is your responsibility to ensure that
+    the software meets your requirements and is compatible with your system. The authors are
+    not liable for any damages or issues arising from the use of this software.
+'''
+
 from PyQt6 import QtWidgets, QtCore, QtGui
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -345,13 +369,13 @@ class Main_Window(QtWidgets.QWidget):
 
     def show_About_App(self):
         dlg = QtWidgets.QDialog(self)
-        dlg.setFixedSize(220,280)
+        dlg.setFixedSize(400,280)
         dlg.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
         dlg.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
-        message = QtWidgets.QLabel(":) This application developed by a great Team that are prisoned in iran so if you see this message\n\nPLEASE HELP US :_(", dlg)
+        message = QtWidgets.QLabel("PLEASE HELP!", dlg)
         message.setWordWrap(True)
         message.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        ok_button = QtWidgets.QPushButton("COOL!",dlg)
+        ok_button = QtWidgets.QPushButton("message received",dlg)
         about_layout = QtWidgets.QVBoxLayout()
         about_layout.addWidget(message)
         about_layout.addWidget(ok_button)
